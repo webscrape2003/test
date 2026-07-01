@@ -1,0 +1,10 @@
+{
+  "name": "scraper-actor",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "apify": "^3.0.0",
+    "playwright": "^1.40.0",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
