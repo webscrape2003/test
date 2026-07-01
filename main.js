@@ -117,19 +117,18 @@ await Actor.exit();*/
 
 import { Actor } from 'apify';
 
-console.log('🚀 Actor started!');
-
-await Actor.init();
+console.log('🚀 Actor starting...');
 
 try {
-    console.log('📥 Getting input...');
+    await Actor.init();
+    console.log('✅ Actor initialized');
+    
     const input = await Actor.getInput();
-    console.log('📥 Input received:', input);
+    console.log('📥 Input received:', JSON.stringify(input));
     
-    const url = input?.url || 'No URL';
-    console.log(`✅ URL: ${url}`);
+    const url = input?.url || 'https://example.com';
+    console.log(`🔗 URL: ${url}`);
     
-    console.log('💾 Saving data...');
     await Actor.pushData({
         status: 'success',
         url: url,
@@ -137,12 +136,11 @@ try {
         timestamp: new Date().toISOString()
     });
     
-    console.log('✅ All done!');
+    console.log('✅ Success!');
 } catch (error) {
-    console.error('❌ ERROR:', error.message);
+    console.error('❌ Error:', error.message);
     console.error('Stack:', error.stack);
 }
 
-console.log('🚪 Actor exiting...');
 await Actor.exit();
-console.log('👋 Actor finished');
+console.log('👋 Done');
