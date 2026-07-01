@@ -1,4 +1,4 @@
-import { Actor } from 'apify';
+/*import { Actor } from 'apify';
 import { chromium } from 'playwright';
 import * as cheerio from 'cheerio';
 
@@ -112,4 +112,37 @@ try {
 }
 
 // Exit the Actor
+await Actor.exit();*/
+
+
+import { Actor } from 'apify';
+
+console.log('🚀 Actor started!');
+
+await Actor.init();
+
+try {
+    console.log('📥 Getting input...');
+    const input = await Actor.getInput();
+    console.log('📥 Input received:', input);
+    
+    const url = input?.url || 'No URL';
+    console.log(`✅ URL: ${url}`);
+    
+    console.log('💾 Saving data...');
+    await Actor.pushData({
+        status: 'success',
+        url: url,
+        message: 'Actor is working!',
+        timestamp: new Date().toISOString()
+    });
+    
+    console.log('✅ All done!');
+} catch (error) {
+    console.error('❌ ERROR:', error.message);
+    console.error('Stack:', error.stack);
+}
+
+console.log('🚪 Actor exiting...');
 await Actor.exit();
+console.log('👋 Actor finished');
