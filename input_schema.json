@@ -15,25 +15,29 @@
       "description": "How long to wait for page to load",
       "default": 60000,
       "minimum": 10000,
-      "maximum": 180000
+      "maximum": 180000,
+      "editor": "number"
     },
     "titleSelector": {
       "title": "Title Selector",
       "type": "string",
       "description": "CSS selector for the title",
-      "default": "span.text-xl"
+      "default": "span.text-xl",
+      "editor": "textfield"
     },
     "detailsSelector": {
       "title": "Details Selector",
       "type": "string",
       "description": "CSS selector for details",
-      "default": "span.text-gray-500"
+      "default": "span.text-gray-500",
+      "editor": "textfield"
     },
     "waitForSelector": {
       "title": "Wait For Selector",
       "type": "string",
       "description": "Selector to wait for before scraping",
-      "default": "span.text-xl"
+      "default": "span.text-xl",
+      "editor": "textfield"
     }
   },
   "required": ["url"]
