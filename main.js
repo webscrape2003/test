@@ -2,25 +2,19 @@ import { Actor } from 'apify';
 import { chromium } from 'playwright';
 import * as cheerio from 'cheerio';
 
-// Wrap your existing function for Apify
 async function scrapePage(url, options = {}) {
     let { headless = true, timeout = 60000, waitForSelector = "span.text-xl", selectors = {} } = options;
-
-    if (!process.env.DISPLAY && headless === false) {
-        headless = true;
-    }
 
     const titleSelector = selectors.title || "span.text-xl";
     const detailsSelector = selectors.details || "span.text-gray-500";
     const scriptContains = selectors.scriptContains || "function download()";
 
     const browser = await chromium.launch({
-        headless,
+        headless: true,
         args: [
             "--no-sandbox",
             "--disable-setuid-sandbox",
-            "--disable-blink-features=AutomationControlled",
-            ...(headless ? ["--disable-gpu"] : []),
+            "--disable-blink-features=AutomationControlled"
         ],
     });
 
@@ -62,24 +56,28 @@ async function scrapePage(url, options = {}) {
     return { html, title, size, downloads, directUrl, cookies };
 }
 
-// Apify Actor entry point
-await Actor.init();
-
-// Get input from API call
-const input = await Actor.getInput();
-const urlToScrape = input.url;  // <-- This is where the API URL comes in!
-
-if (!urlToScrape) {
-    console.error('Error: No URL provided in input');
-    process.exit(1);
-}
-
-console.log(`Scraping URL: ${urlToScrape}`);
+// =============================================
+// MAIN ACTOR ENTRY POINT - FIXED!
+// =============================================
 
 try {
-    // Call your existing function
+    // Initialize the Actor
+    await Actor.init();
+
+    // Get input from the user
+    const input = await Actor.getInput();
+    const urlToScrape = input?.url;
+
+    if (!urlToScrape) {
+        console.error('❌ Error: No URL provided in input');
+        await Actor.exit();
+        process.exit(1);
+    }
+
+    console.log(`🔍 Scraping URL: ${urlToScrape}`);
+
+    // Run the scraper
     const result = await scrapePage(urlToScrape, {
-        headless: true,
         timeout: input.timeout || 60000,
         waitForSelector: input.waitForSelector || "span.text-xl",
         selectors: {
@@ -88,22 +86,30 @@ try {
         }
     });
 
-    // Push results to Apify dataset (API will return this)
+    // Save results to Apify dataset
     await Actor.pushData({
         scrapedAt: new Date().toISOString(),
         url: urlToScrape,
         result: result
     });
 
-    console.log('Scraping completed successfully!');
+    console.log('✅ Scraping completed successfully!');
+    console.log(`📝 Title: ${result.title}`);
+    console.log(`📦 Size: ${result.size}`);
+    console.log(`⬇️ Downloads: ${result.downloads}`);
 
 } catch (error) {
-    console.error('Scraping failed:', error);
+    console.error('❌ Scraping failed:', error.message);
+    console.error('Stack trace:', error.stack);
+    
+    // Save error to dataset
     await Actor.pushData({
-        url: urlToScrape,
+        url: input?.url || 'unknown',
         error: error.message,
+        stack: error.stack,
         timestamp: new Date().toISOString()
     });
 }
 
+// Exit the Actor
 await Actor.exit();
