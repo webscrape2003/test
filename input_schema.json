@@ -1,0 +1,41 @@
+{
+  "title": "Scraper Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "url": {
+      "title": "URL to Scrape",
+      "type": "string",
+      "description": "The URL you want to scrape",
+      "editor": "textfield",
+      "isRequired": true
+    },
+    "timeout": {
+      "title": "Timeout (ms)",
+      "type": "integer",
+      "description": "How long to wait for page to load",
+      "default": 60000,
+      "minimum": 10000,
+      "maximum": 180000
+    },
+    "titleSelector": {
+      "title": "Title Selector",
+      "type": "string",
+      "description": "CSS selector for the title",
+      "default": "span.text-xl"
+    },
+    "detailsSelector": {
+      "title": "Details Selector",
+      "type": "string",
+      "description": "CSS selector for details",
+      "default": "span.text-gray-500"
+    },
+    "waitForSelector": {
+      "title": "Wait For Selector",
+      "type": "string",
+      "description": "Selector to wait for before scraping",
+      "default": "span.text-xl"
+    }
+  },
+  "required": ["url"]
+}
